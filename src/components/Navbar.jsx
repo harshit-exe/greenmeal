@@ -14,7 +14,7 @@ export function Navbar() {
 
   const menuItems = [
     { name: "Home", href: "/" },
-    { name: "About Us", href: "/about" },
+    { name: "About Us", href: "/admin" },
     { name: "Dashboard", href: "/dashboard" },
     { name: "Login", href: "/login" },
     { name: "Sign Up", href: "/signup" },
