@@ -25,7 +25,7 @@ const DonationRequests = ({userData}) => {
 
 
   const fetchDonorData = async()=>{
-    const response = await fetch(`${BaseApiUrl}/denoted/getngo`, {
+    const response = await fetch(`http://localhost:4000/api/denoted/getngo`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ const DonationRequests = ({userData}) => {
     })
     const json = await response.json()
     console.log(json);
-    setdataDonor(json)
+    setdataDonor(json.data)
     
   }
 
@@ -106,7 +106,7 @@ const DonationRequests = ({userData}) => {
       acceptedAt: new Date().toISOString()
     };
     setAcceptedDonations(prev => [...prev, updatedRequest]);
-    setRequests(prev => prev.filter(r => r.id !== request.id));
+    setRequests(prev => prev.filter(r => r._id !== request._id));
   };
 
   const handleReject = (request) => {
@@ -242,6 +242,73 @@ const DonationRequests = ({userData}) => {
                 </Card>
               </motion.div>
             ))}
+
+            {dataDonor?.map((request) => (
+              <motion.div
+                key={request._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                whileHover={{ scale: 1.02 }}
+                className="mb-4"
+              >
+                <Card className="bg-white border-green-200 hover:shadow-lg transition-shadow">
+                  <CardHeader className="bg-yellow-50 border-b border-yellow-100">
+                    <CardTitle className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <Package className="mr-2 text-yellow-600" size={20} />
+                        <span className="text-lg">New Donation Request</span>
+                      </div>
+                      <span className="text-sm text-gray-500">
+                        {/* {new Date(request.timestamp).toLocaleDateString()} */}
+                      </span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-4 space-y-3">
+                    <div className="flex flex-col space-y-2">
+                      <p className="font-semibold text-lg">Green Earth Foundation</p>
+                      <p className="flex items-center text-gray-600">
+                        <MapPin className="mr-2 text-green-500" size={16} />
+                        123 Eco Street, Mumbai
+                      </p>
+                      <p className="flex items-center text-gray-600">
+                        <Clock className="mr-2 text-blue-500" size={16} />
+                         Email: +91 98765-43210
+                      </p>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {request?.item?.map((item, index) => (
+                          <span
+                            key={index}
+                            className="bg-green-100 text-green-800 text-sm px-3 py-1 rounded-full"
+                          >
+                            {item.itemName}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex justify-end gap-2 bg-gray-50 p-4">
+                    <Button
+                      onClick={() => handleReject(request)}
+                      variant="outline"
+                      className="border-red-500 text-red-600 hover:bg-red-50"
+                    >
+                      <X className="mr-2 h-4 w-4" />
+                      Reject
+                    </Button>
+                    <Button
+                      onClick={() => handleAccept(request)}
+                      className="bg-green-600 hover:bg-green-700 text-white"
+                    >
+                      <Check className="mr-2 h-4 w-4" />
+                      Accept
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </motion.div>
+            ))}
+
+            
           </AnimatePresence>
         </div>
 
@@ -263,9 +330,9 @@ const DonationRequests = ({userData}) => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {acceptedDonations.map((donation) => (
+                  {acceptedDonations?.map((donation) => (
                     <motion.tr
-                      key={donation.id}
+                      key={donation._id}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       className="hover:bg-gray-50"
@@ -278,12 +345,12 @@ const DonationRequests = ({userData}) => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex flex-wrap gap-1">
-                          {donation.items.map((item, index) => (
+                          {donation?.item?.map((item, index) => (
                             <span
                               key={index}
                               className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full"
                             >
-                              {item}
+                              {item.itemName}
                             </span>
                           ))}
                         </div>
