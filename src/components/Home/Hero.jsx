@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import { Navbar } from "../Navbar";
 import { Button } from "../ui/button";
 

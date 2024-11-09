@@ -45,6 +45,7 @@ export default function Sidebar({ onSelectComponent, closeSidebar }) {
 
   const handleLogout = () => {
     router.push("/")
+    localStorage.clear()
   }
 
   return (
