@@ -20,26 +20,25 @@ const DonationRequests = ({userData}) => {
   const [acceptedDonations, setAcceptedDonations] = useState([]);
   const [selectedDonation, setSelectedDonation] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
+  const [dataDonor, setdataDonor] = useState([]);
 
 
   const fetchDonorData = async()=>{
-    const response = await fetch(`${BaseApiUrl}/user/login`, {
+    const response = await fetch(`http://localhost:4000/api/denoted/getngo`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'userid':userData.user.id
       }
-     
     })
     const json = await response.json()
     console.log(json);
+    setdataDonor(json)
     
   }
 
-
   useEffect(() => {
     fetchDonorData();
-
   }, [])
   
 
