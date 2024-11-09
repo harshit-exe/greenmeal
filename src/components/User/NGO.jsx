@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { MapPin, Phone, Search, Leaf, Navigation } from 'lucide-react'
+import { MapPin, Phone, Search, Leaf, Navigation, Mail } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Toaster, toast } from 'sonner'
 import DonationSelector from './DonationSelector'
+import { BaseApiUrl } from '@/utils/constanst'
 
 const dummyNGOs = [
   { id: 1, name: "Green Earth Foundation", address: "123 Eco Street, Mumbai, Maharashtra", phone: "+91 9876543210", lat: 19.0760, lon: 72.8777 },
@@ -20,21 +21,39 @@ const dummyNGOs = [
 
 export default function NGO() {
   const [ngos, setNgos] = useState(dummyNGOs)
+  const [data, setData] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedNGO, setSelectedNGO] = useState(null)
   const [isDonateModalOpen, setIsDonateModalOpen] = useState(false)
   const [userLocation, setUserLocation] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
+  
+
   useEffect(() => {
     setNgos(dummyNGOs)
+    fetchUser()
   }, [])
 
+  const fetchUser = async () => {
+    const response = await fetch(`${BaseApiUrl}/user/getngo`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+    
+      },
+    });
+
+    const json = await response.json();
+    console.log(json.resume);
+    setData(json.resume)
+    
+  }
   const handleSearch = (event) => {
     const term = event.target.value.toLowerCase()
     setSearchTerm(term)
-    const filteredNGOs = dummyNGOs.filter(ngo => 
-      ngo.name.toLowerCase().includes(term) || 
+    const filteredNGOs = dummyNGOs.filter(ngo =>
+      ngo.name.toLowerCase().includes(term) ||
       ngo.address.toLowerCase().includes(term)
     )
     setNgos(filteredNGOs)
@@ -66,8 +85,8 @@ export default function NGO() {
           console.log('Geolocation error:', error);
           console.error("Error getting location:", error)
           let errorMessage = "An error occurred while trying to access your location."
-          
-          switch(error.code) {
+
+          switch (error.code) {
             case error.PERMISSION_DENIED:
               errorMessage = "You've denied permission to access your location. Please enable location services in your browser settings."
               break
@@ -78,7 +97,7 @@ export default function NGO() {
               errorMessage = "The request to get your location timed out. Please try again."
               break
           }
-          
+
           toast.error('Unable to access your location', {
             description: errorMessage,
           })
@@ -102,11 +121,11 @@ export default function NGO() {
     const R = 6371 // Radius of the Earth in kilometers
     const dLat = (lat2 - lat1) * Math.PI / 180
     const dLon = (lon2 - lon1) * Math.PI / 180
-    const a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2)
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2)
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
     return R * c // Distance in kilometers
   }
 
@@ -126,7 +145,7 @@ export default function NGO() {
   return (
     <div className="container mx-auto p-4 bg-gradient-to-b from-green-50 to-green-100 min-h-screen">
       <Toaster />
-      <motion.h1 
+      <motion.h1
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="text-4xl font-bold text-green-800 mb-8 text-center"
@@ -144,8 +163,8 @@ export default function NGO() {
             className="pl-10 bg-white border-green-300 focus:border-green-500 focus:ring-green-500 rounded-full"
           />
         </div>
-        <Button 
-          onClick={findNearestNGO} 
+        <Button
+          onClick={findNearestNGO}
           className="bg-green-600 hover:bg-green-700 text-white rounded-full flex items-center justify-center"
           disabled={isLoading}
         >
@@ -162,7 +181,7 @@ export default function NGO() {
           Find Nearest NGO
         </Button>
       </div>
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ staggerChildren: 0.1 }}
@@ -210,6 +229,57 @@ export default function NGO() {
               </Card>
             </motion.div>
           ))}
+
+          {data.map((ngo) => (
+            <motion.div
+              key={ngo.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Card className="bg-white border-green-200 hover:shadow-lg transition-shadow rounded-lg overflow-hidden">
+                <CardHeader className="bg-green-600 text-white p-4">
+                  <CardTitle className="flex items-center">
+                    <div className="w-12 h-12 rounded-full bg-white text-green-600 flex items-center justify-center mr-3 text-xl font-bold">
+                      {ngo?.userName[0]}
+                    </div>
+                    <div>
+                      {/* <h3 className="text-lg font-semibold">{ngo.name}</h3> */}
+                      <p className="text-sm text-green-100">{ngo.address}</p>
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4">
+                  <p className="flex items-center text-gray-600 mb-2">
+                    <MapPin className="mr-2 text-green-500 flex-shrink-0" size={18} />
+                    <span className="text-sm">{ngo.address}</span>
+                  </p>
+                  <p className="flex items-center text-gray-600">
+                    <Phone className="mr-2 text-green-500 flex-shrink-0" size={18} />
+                    <span className="text-sm">{ngo.phone}</span>
+                  </p>
+                  <p className="flex items-center text-gray-600">
+                    <Mail className="mr-2 text-green-500 flex-shrink-0" size={18} />
+                    <span className="text-sm">{ngo.email}</span>
+                  </p>
+                </CardContent>
+                <CardFooter className="flex justify-between bg-green-50 p-4">
+                  <Button variant="outline" className="border-green-500 text-green-600 hover:bg-green-100">
+                    Get Directions
+                  </Button>
+                  <Button onClick={() => openDonateModal(ngo)} className="bg-green-600 hover:bg-green-700 text-white">
+                    Donate Now
+                  </Button>
+                </CardFooter>
+              </Card>
+            </motion.div>
+          ))}
+
+
+
+
+
         </AnimatePresence>
       </motion.div>
       <Dialog open={isDonateModalOpen} onOpenChange={setIsDonateModalOpen}>
