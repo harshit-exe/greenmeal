@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Loader2, Plus, Minus, Edit } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { BaseApiUrl } from '@/utils/constanst'
 
 const ProductTable = ({ products, onEdit, onQuantityChange }) => (
   <Card className="mt-6 bg-white border border-green-100">
@@ -30,25 +32,21 @@ const ProductTable = ({ products, onEdit, onQuantityChange }) => (
           </TableHeader>
           <TableBody>
             {products.map((product) => (
-              <TableRow key={product.id}>
-                <TableCell>{product.name}</TableCell>
+              <TableRow key={product._id}>
+                <TableCell>{product.itemName}</TableCell>
                 <TableCell>₹{product.mrp.toLocaleString('en-IN')}</TableCell>
                 <TableCell>{product.type}</TableCell>
-                <TableCell>{new Date(product.expiryDate).toLocaleDateString('en-IN')}</TableCell>
+                <TableCell>{new Date(product.Expirydate).toLocaleDateString('en-IN')}</TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-2">
-                    <Button size="sm" onClick={() => onQuantityChange(product.id, -1)} disabled={product.quantity <= 0}>
-                      <Minus className="h-4 w-4" />
-                    </Button>
-                    <span>{product.quantity}</span>
-                    <Button size="sm" onClick={() => onQuantityChange(product.id, 1)}>
-                      <Plus className="h-4 w-4" />
-                    </Button>
+                
+                    <span>{product.Quantity}</span>
+                 
                   </div>
                 </TableCell>
                 <TableCell>
-                  {product.image && (
-                    <img src={product.image} alt={product.name} className="w-16 h-16 object-cover rounded" />
+                  {product.Imageurl && (
+                    <img src={product.Imageurl} alt={product.itemName} className="w-16 h-16 object-cover rounded" />
                   )}
                 </TableCell>
                 <TableCell>
@@ -64,8 +62,8 @@ const ProductTable = ({ products, onEdit, onQuantityChange }) => (
     </CardContent>
   </Card>
 )
+const ProductForm = ({ product, addProduct, updateProduct, setIsDialogOpen, openCamera, productImage,userData }) => {
 
-const ProductForm = ({ product, addProduct, updateProduct, setIsDialogOpen, openCamera, productImage }) => {
   const [formData, setFormData] = useState(product || {
     name: '',
     mrp: '',
@@ -80,14 +78,47 @@ const ProductForm = ({ product, addProduct, updateProduct, setIsDialogOpen, open
     e.preventDefault()
     setIsSubmitting(true)
     try {
-      // Simulating API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      if (product) {
-        updateProduct(formData)
-      } else {
-        addProduct(formData)
-      }
-      setIsDialogOpen(false)
+
+      console.log(productImage);
+      console.log(formData);
+
+
+
+
+
+      const data = new FormData();
+
+      data.append("file", productImage);
+      data.append("upload_preset", "kfdvzoaz");
+      data.append("cloud_name", "dggd6cvzh");
+
+
+      const res = await fetch('https://api.cloudinary.com/v1_1/dggd6cvzh/image/upload', {
+        method: "POST",
+        body: data
+      })
+      const cloudData = await res.json();
+
+
+      const response = await fetch(`${BaseApiUrl}/inventory/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          itemName: formData.name, userid: userData?.user?.id, Expirydate: formData.expiryDate, Imageurl: cloudData.url,
+          mrp: formData.mrp, Quantity: formData.quantity, type: formData.type
+        })
+      });
+
+      const json = await response.json();
+
+      console.log('everything is fine', json ,userData);
+      router.push("/")
+
+
+
+
     } catch (error) {
       console.error('Error submitting product:', error)
     } finally {
@@ -180,7 +211,7 @@ const ProductForm = ({ product, addProduct, updateProduct, setIsDialogOpen, open
   )
 }
 
-const Inventory = () => {
+const Inventory = ({userData}) => {
   const [products, setProducts] = useState([])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [isCameraOpen, setIsCameraOpen] = useState(false)
@@ -188,22 +219,37 @@ const Inventory = () => {
   const [editingProduct, setEditingProduct] = useState(null)
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
+  const router = useRouter()
 
   useEffect(() => {
     // Simulating API call to fetch products
     const fetchProducts = async () => {
       try {
-        // Replace with actual API call
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        setProducts([
-          { id: 1, name: 'Organic Apples', mrp: 150, type: 'Fruits', expiryDate: '2023-12-31', quantity: 100, image: '/placeholder.svg?height=100&width=100' },
-          { id: 2, name: 'Fresh Spinach', mrp: 50, type: 'Vegetables', expiryDate: '2023-11-15', quantity: 50, image: '/placeholder.svg?height=100&width=100' },
-        ])
+
+        const response = await fetch(`http://localhost:4000/api/inventory/`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            "userid":userData?.user?.id
+          },
+        
+        })
+        const json = await response.json()
+
+        console.log(json,"userdata or lasdkfjadf",userData?.user);
+        setProducts(json.resume)
+       
+
+
+      
       } catch (error) {
         console.error('Error fetching products:', error)
       }
     }
     fetchProducts()
+
+
+
   }, [])
 
   const addProduct = (product) => {
@@ -230,16 +276,17 @@ const Inventory = () => {
   }
 
   const openCamera = async (type) => {
-    
+
     setIsCameraOpen(true);
-  
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: { exact: 'environment' }, // Requests the back camera
+          // facingMode: { exact: 'environment' }, // Requests the back camera
+          facingMode: { exact: 'user' }, // Requests the back camera
         },
       });
-  
+
       // Set the video stream to the video element
       videoRef.current.srcObject = stream;
       videoRef.current.play();
@@ -255,10 +302,10 @@ const Inventory = () => {
     canvas.height = video.videoHeight
     canvas.getContext('2d').drawImage(video, 0, 0)
     const photoUrl = canvas.toDataURL('image/jpeg')
-    
+
     setCapturedImage(photoUrl)
     console.log("Captured image (simulating backend send):", photoUrl)
-    
+
     closeCamera()
   }
 
@@ -272,15 +319,15 @@ const Inventory = () => {
   }
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
       className="p-4 max-w-7xl mx-auto bg-green-50"
     >
       <h1 className="text-3xl font-bold text-green-700 mb-6">Eco-Friendly Inventory Management</h1>
-      
-      <Button onClick={() => {setIsDialogOpen(true); setEditingProduct(null)}} className="mb-4 bg-green-600 hover:bg-green-700">
+
+      <Button onClick={() => { setIsDialogOpen(true); setEditingProduct(null) }} className="mb-4 bg-green-600 hover:bg-green-700">
         Add New Product
       </Button>
 
@@ -291,9 +338,9 @@ const Inventory = () => {
           exit={{ y: -20, opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <ProductTable 
-            products={products} 
-            onEdit={(product) => {setEditingProduct(product); setIsDialogOpen(true)}}
+          <ProductTable
+            products={products}
+            onEdit={(product) => { setEditingProduct(product); setIsDialogOpen(true) }}
             onQuantityChange={handleQuantityChange}
           />
         </motion.div>
@@ -304,7 +351,8 @@ const Inventory = () => {
           <DialogHeader>
             <DialogTitle className="text-green-700">{editingProduct ? 'Edit Product' : 'Add New Product'}</DialogTitle>
           </DialogHeader>
-          <ProductForm 
+          <ProductForm
+          userData={userData}
             product={editingProduct}
             addProduct={addProduct}
             updateProduct={updateProduct}

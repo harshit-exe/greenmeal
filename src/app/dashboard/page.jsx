@@ -14,6 +14,7 @@ import Recipes from '@/components/User/Recipes'
 import Account from '@/components/User/Account'
 import NGO from '@/components/User/NGO'
 import History from '@/components/User/History'
+import { checkToken } from '@/utils/checkAuth'
 
 // Import your components here
 
@@ -33,10 +34,21 @@ export default function DashboardLayout() {
   const [searchResults, setSearchResults] = useState([])
   const [notifications, setNotifications] = useState(3)
   const { theme, setTheme } = useTheme()
+  const [userData, setUserData] = useState({})
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen)
 
   useEffect(() => {
+    const verifyToken = async () => {
+      const tokenValid = await checkToken()
+    
+      setUserData(tokenValid.data);
+      console.log(tokenValid.data);
+      
+  
+    }
+    verifyToken()
+
     const handleResize = () => {
       if (window.innerWidth >= 768) {
         setIsSidebarOpen(true)
@@ -72,7 +84,7 @@ export default function DashboardLayout() {
       case 'Overview':
         return <Overview />
       case 'Inventory':
-        return <Inventory />
+        return <Inventory userData={userData} />
       case 'Recipes':
         return <Recipes />
       case 'NGO':
@@ -85,6 +97,8 @@ export default function DashboardLayout() {
         return <Overview />
     }
   }
+
+
 
   return (
     <div className="flex h-screen bg-green-50 text-green-900">
