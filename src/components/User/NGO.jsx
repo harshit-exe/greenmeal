@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { MapPin, Phone, Search, Leaf, Navigation } from 'lucide-react'
-import { Toaster, toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Toaster, toast } from 'sonner'
 import DonationSelector from './DonationSelector'
 
 const dummyNGOs = [
@@ -47,7 +47,7 @@ export default function NGO() {
         (position) => {
           const { latitude, longitude } = position.coords
           setUserLocation({ lat: latitude, lon: longitude })
-          
+          console.log('User location:', { latitude, longitude });
           const sortedNGOs = [...ngos].sort((a, b) => {
             const distA = calculateDistance(latitude, longitude, a.lat, a.lon)
             const distB = calculateDistance(latitude, longitude, b.lat, b.lon)
@@ -57,27 +57,42 @@ export default function NGO() {
           setNgos(sortedNGOs)
           const nearestCity = sortedNGOs[0].address.split(',')[1].trim()
           console.log('Nearest city:', nearestCity)
-          toast({
-            title: "Location Found",
-            description: `Showing NGOs nearest to ${nearestCity}`,
+          toast.success(`Showing NGOs nearest to ${nearestCity}`, {
+            description: 'Location found successfully',
           })
           setIsLoading(false)
         },
         (error) => {
+          console.log('Geolocation error:', error);
           console.error("Error getting location:", error)
-          toast({
-            title: "Location Error",
-            description: "Unable to access your location. Please check your browser settings.",
-            variant: "destructive",
+          let errorMessage = "An error occurred while trying to access your location."
+          
+          switch(error.code) {
+            case error.PERMISSION_DENIED:
+              errorMessage = "You've denied permission to access your location. Please enable location services in your browser settings."
+              break
+            case error.POSITION_UNAVAILABLE:
+              errorMessage = "Location information is unavailable. Please try again later."
+              break
+            case error.TIMEOUT:
+              errorMessage = "The request to get your location timed out. Please try again."
+              break
+          }
+          
+          toast.error('Unable to access your location', {
+            description: errorMessage,
           })
           setIsLoading(false)
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0
         }
       )
     } else {
-      toast({
-        title: "Geolocation Unavailable",
-        description: "Your browser doesn't support geolocation.",
-        variant: "destructive",
+      toast.error('Geolocation Unavailable', {
+        description: "Your browser doesn't support geolocation. Please try a different browser.",
       })
       setIsLoading(false)
     }
@@ -103,14 +118,14 @@ export default function NGO() {
   const handleDonationComplete = (donationData) => {
     console.log('Donation data:', donationData)
     setIsDonateModalOpen(false)
-    toast({
-      title: "Donation Successful",
+    toast.success('Donation Successful', {
       description: `Thank you for donating ${donationData.length} items to ${selectedNGO.name}!`,
     })
   }
 
   return (
     <div className="container mx-auto p-4 bg-gradient-to-b from-green-50 to-green-100 min-h-screen">
+      <Toaster />
       <motion.h1 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
