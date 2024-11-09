@@ -25,7 +25,7 @@ const DonationRequests = ({userData}) => {
 
 
   const fetchDonorData = async()=>{
-    const response = await fetch(`http://localhost:4000/api/denoted/getngo`, {
+    const response = await fetch(`${BaseApiUrl}/denoted/getngo`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
