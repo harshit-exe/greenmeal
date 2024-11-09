@@ -80,7 +80,7 @@ const CampaignPage = () => {
     setIsDialogOpen(false);
     toast.success('Campaign created successfully!');
   };
-
+  console.log(setNewCampaign);
   const handleTotalDonation = (campaign) => {
     const donationPercentage = ((campaign.donationCollected / campaign.donationRequired) * 100).toFixed(1);
     toast(
@@ -120,7 +120,7 @@ const CampaignPage = () => {
       }, 3000);
     }
   };
-
+  
   const handleSendEventLocation = (campaign) => {
     if (campaign.location) {
       const { lng, lat } = campaign.location;
@@ -161,12 +161,13 @@ const CampaignPage = () => {
       campaign.eventDate,
       campaign.location ? `Longitude ${campaign.location.lng}, Latitude ${campaign.location.lat}` : 'Location not set'
     ];
+    
     toast.success("Alert sent to donors!", {
       description: `Notification sent for campaign: ${campaign.name}`,
       duration: 3000,
     });
   };
-
+  console.log(handleSendAlertToDonors);
   return (
     <div className="container mx-auto p-4 bg-green-50 min-h-screen">
       <h1 className="text-3xl font-bold text-green-800 mb-6 flex items-center">

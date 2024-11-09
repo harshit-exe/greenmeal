@@ -14,6 +14,7 @@ import Recipes from '@/components/User/Recipes'
 import Account from '@/components/User/Account'
 import NGO from '@/components/User/NGO'
 import History from '@/components/User/History'
+import UpcomingEvent from '@/components/User/UpcomingEvent'
 
 // Import your components here
 
@@ -79,6 +80,8 @@ export default function DashboardLayout() {
         return <NGO />
       case 'History':
         return <History />
+      case 'UpcomingEvent':
+        return <UpcomingEvent />
       case 'Account':
         return <Account />
       default:
