@@ -191,7 +191,7 @@ const RecentActivities = () => (
       <ul className="space-y-2">
         <li className="flex items-center text-green-600 dark:text-green-400">
           <Leaf className="mr-2" size={16} />
-          You've donated 50kg of fruits to Food Bank A
+          Youve donated 50kg of fruits to Food Bank A
         </li>
         <li className="flex items-center text-blue-600 dark:text-blue-400">
           <Users className="mr-2" size={16} />
