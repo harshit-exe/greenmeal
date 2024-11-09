@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Menu } from "lucide-react";
+import { LeafIcon, Menu } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -25,8 +25,11 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
-            <Link href="/" className="text-2xl font-bold text-primary">
-              GreenMeal
+            <Link href="/" className="text-xl font-semibold gap-5  text-primary">
+              <span className="flex gap-2">
+                <LeafIcon className="text-green-600" />
+                <p><span className="text-green-600">Green</span>Meal.</p>
+              </span>
             </Link>
           </div>
           <div className="hidden md:block">
