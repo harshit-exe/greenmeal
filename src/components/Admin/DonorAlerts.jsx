@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { BaseApiUrl } from '@/utils/constanst';
+import CertificateComponent from './CertificateComponent';
 
 const STATUS = {
   PENDING: 'pending',
@@ -60,7 +61,7 @@ const DonationRequests = ({userData}) => {
       items: ["Rice", "Dal", "Sugar"],
       status: STATUS.PENDING,
       timestamp: new Date().toISOString(),
-      donor: "John Doe",
+      donor: "Harshit Nikam",
       contact: "+91 98765-43210"
     },
   ];
@@ -306,41 +307,25 @@ const DonationRequests = ({userData}) => {
 
       {/* Certificate Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center">
-              <Award className="mr-2 text-green-600" />
-              Issue Donation Certificate
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 p-4">
-            <div className="bg-green-50 p-4 rounded-lg">
-              <h3 className="font-semibold mb-2">Donation Details</h3>
-              <p className="text-sm text-gray-600">NGO: {selectedDonation?.ngoName}</p>
-              <p className="text-sm text-gray-600">Donor: {selectedDonation?.donor}</p>
-              <p className="text-sm text-gray-600">Items: {selectedDonation?.items.join(', ')}</p>
-              <p className="text-sm text-gray-600">Date: {new Date().toLocaleDateString()}</p>
-            </div>
-          </div>
-          <DialogFooter className="sm:justify-start">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setIsDialogOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              className="bg-green-600 hover:bg-green-700 text-white"
-              onClick={issueCertificate}
-            >
-              <Award className="mr-2 h-4 w-4" />
-              Issue Certificate
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+  <DialogContent className="sm:max-w-5xl">
+    <DialogHeader>
+      <DialogTitle className="flex items-center">
+        <Award className="mr-2 text-green-600" />
+        Donation Achievement Certificate
+      </DialogTitle>
+    </DialogHeader>
+    
+    <div className="p-4 ">
+      <CertificateComponent 
+        donation={selectedDonation}
+        onClose={() => {
+          setIsDialogOpen(false);
+          issueCertificate();
+        }}
+      />
+    </div>
+  </DialogContent>
+</Dialog>
     </div>
   );
 };
