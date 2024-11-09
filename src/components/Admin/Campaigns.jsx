@@ -29,7 +29,7 @@ const MapboxMap = ({ onLocationSelect }) => {
     <Map
       {...viewState}
       onMove={evt => setViewState(evt.viewState)}
-      mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+      mapboxAccessToken='pk.eyJ1IjoiaGFyc2hpdDEyMTgiLCJhIjoiY20zYW5yOWtnMTc2aDJzc2Y2dzRid2x2byJ9.ha_nwb8ouQ-8ioMCDkGzqw'
       style={{ width: '100%', height: '300px' }}
       mapStyle="mapbox://styles/mapbox/outdoors-v11"
       onClick={handleClick}
