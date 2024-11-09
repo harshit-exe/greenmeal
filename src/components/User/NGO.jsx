@@ -12,14 +12,14 @@ import DonationSelector from './DonationSelector'
 import { BaseApiUrl } from '@/utils/constanst'
 
 const dummyNGOs = [
-  { id: 1, name: "Green Earth Foundation", address: "123 Eco Street, Mumbai, Maharashtra", phone: "+91 9876543210", lat: 19.0760, lon: 72.8777 },
-  { id: 2, name: "Clean Water Initiative", address: "456 River Road, Delhi, Delhi", phone: "+91 9876543211", lat: 28.6139, lon: 77.2090 },
-  { id: 3, name: "Sustainable Future", address: "789 Green Avenue, Bangalore, Karnataka", phone: "+91 9876543212", lat: 12.9716, lon: 77.5946 },
-  { id: 4, name: "Wildlife Protection Society", address: "101 Forest Lane, Chennai, Tamil Nadu", phone: "+91 9876543213", lat: 13.0827, lon: 80.2707 },
-  { id: 5, name: "Renewable Energy Alliance", address: "202 Solar Street, Hyderabad, Telangana", phone: "+91 9876543214", lat: 17.3850, lon: 78.4867 },
+  // { id: 1, name: "Green Earth Foundation", address: "123 Eco Street, Mumbai, Maharashtra", phone: "+91 9876543210", lat: 19.0760, lon: 72.8777 },
+  // { id: 2, name: "Clean Water Initiative", address: "456 River Road, Delhi, Delhi", phone: "+91 9876543211", lat: 28.6139, lon: 77.2090 },
+  // { id: 3, name: "Sustainable Future", address: "789 Green Avenue, Bangalore, Karnataka", phone: "+91 9876543212", lat: 12.9716, lon: 77.5946 },
+  // { id: 4, name: "Wildlife Protection Society", address: "101 Forest Lane, Chennai, Tamil Nadu", phone: "+91 9876543213", lat: 13.0827, lon: 80.2707 },
+  // { id: 5, name: "Renewable Energy Alliance", address: "202 Solar Street, Hyderabad, Telangana", phone: "+91 9876543214", lat: 17.3850, lon: 78.4867 },
 ]
 
-export default function NGO() {
+export default function NGO({userData}) {
   const [ngos, setNgos] = useState(dummyNGOs)
   const [data, setData] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
@@ -27,12 +27,15 @@ export default function NGO() {
   const [isDonateModalOpen, setIsDonateModalOpen] = useState(false)
   const [userLocation, setUserLocation] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
-
+  const [ngoId, setNgoId] = useState('')
+  const [products, setProducts] = useState([])
   
 
   useEffect(() => {
     setNgos(dummyNGOs)
     fetchUser()
+    fetchPorduct()
+
   }, [])
 
   const fetchUser = async () => {
@@ -40,15 +43,33 @@ export default function NGO() {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-    
       },
     });
 
     const json = await response.json();
     console.log(json.resume);
     setData(json.resume)
-    
   }
+
+
+  const fetchPorduct = async () => {
+    const response = await fetch(`${BaseApiUrl}/inventory/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        "userid":userData?.user?.id
+      },
+    
+    })
+    const json = await response.json()
+
+    console.log(json,"userdata or lasdkfjadf",userData?.user);
+    setProducts(json.resume)
+   
+
+  }
+
+
   const handleSearch = (event) => {
     const term = event.target.value.toLowerCase()
     setSearchTerm(term)
@@ -132,10 +153,27 @@ export default function NGO() {
   const openDonateModal = (ngo) => {
     setSelectedNGO(ngo)
     setIsDonateModalOpen(true)
+    setNgoId(ngo._id)
+
   }
 
-  const handleDonationComplete = (donationData) => {
-    console.log('Donation data:', donationData)
+  const handleDonationComplete = async (donationData) => {
+    console.log('Donation data:', donationData, ngoId)
+
+    const response = await fetch(`http://localhost:4000/api/denoted/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({  ngoid:ngoId,        userid:donationData[0]?.userid,        item:donationData,        status:'',        needed :''})
+    })
+    const json = await response.json()
+    console.log(json);
+    
+
+
+
+
     setIsDonateModalOpen(false)
     toast.success('Donation Successful', {
       description: `Thank you for donating ${donationData.length} items to ${selectedNGO.name}!`,
@@ -190,7 +228,7 @@ export default function NGO() {
         <AnimatePresence>
           {ngos.map((ngo) => (
             <motion.div
-              key={ngo.id}
+              key={ngo._id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
@@ -290,7 +328,7 @@ export default function NGO() {
               Donate to {selectedNGO?.name}
             </DialogTitle>
           </DialogHeader>
-          <DonationSelector onDonationComplete={handleDonationComplete} />
+          <DonationSelector userData={userData} onDonationComplete={handleDonationComplete} />
         </DialogContent>
       </Dialog>
     </div>

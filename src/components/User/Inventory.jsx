@@ -226,7 +226,7 @@ const Inventory = ({userData}) => {
     const fetchProducts = async () => {
       try {
 
-        const response = await fetch(`http://localhost:4000/api/inventory/`, {
+        const response = await fetch(`${BaseApiUrl}/inventory/`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

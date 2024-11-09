@@ -88,7 +88,7 @@ export default function DashboardLayout() {
       case 'Recipes':
         return <Recipes />
       case 'NGO':
-        return <NGO />
+        return <NGO userData={userData}/>
       case 'History':
         return <History />
       case 'Account':
