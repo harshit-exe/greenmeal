@@ -11,7 +11,7 @@ export default function Hero() {
           <div className="container mx-auto px-4">
             <div className="text-center">
               <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-6xl">
-                Track Your Meals, Achieve Your Goals
+                Track Your Meals, Achieve Your Goalss
               </h1>
               <p className="mt-6 text-lg leading-8 text-muted-foreground">
                 GreenMeal helps you monitor your food intake, set nutritional
