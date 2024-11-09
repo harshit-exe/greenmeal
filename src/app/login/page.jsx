@@ -1,8 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
+import { BaseApiUrl } from "@/utils/constanst";
+import { useRouter } from 'next/navigation'
 
 const LoginPage = () => {
+  const router = useRouter()
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -15,9 +19,46 @@ const LoginPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
+
+
+
+    console.log(email, password)
+
+    try {
+      const response = await fetch(`${BaseApiUrl}/user/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: formData.email, password: formData.password })
+      })
+      const json = await response.json()
+
+      if (json.data) {
+        console.log(json)
+        toast.success("Login Successful")
+        localStorage.setItem('token', json.data.token)
+        router.push("/")
+      } else {
+        toast.error("Invalid Credentials")
+      }
+    } catch (error) {
+      console.error("Login error:", error)
+      toast.error("An error occurred during login")
+    } finally {
+      setIsLoading(false)
+    }
+
+
+
+
+
+
+
+
   };
 
   return (

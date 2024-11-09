@@ -1,9 +1,24 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { BaseApiUrl } from "@/utils/constanst";
+import { useRouter } from 'next/navigation'
 const OTPForm = () => {
-  const [otp, setOtp] = useState(Array(6).fill("")); // Initialize OTP array with empty strings
+  const router = useRouter()
+
+  const [formData, setFormData] = useState({
+    otp: ''
+  })
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: value
+    }))
+  }
   const [isClient, setIsClient] = useState(false); // To check if the code is running on the client side
 
   useEffect(() => {
@@ -33,10 +48,34 @@ const OTPForm = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Handle OTP verification
-    console.log("Entered OTP:", otp.join(""));
+    console.log("Entered OTP:",formData.otp);
+
+
+    const response = await fetch(`${BaseApiUrl}/user/checkout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email: localStorage.getItem('email'), userotp: formData.otp })
+    });
+    const json = await response.json();
+
+    if (json.message) {
+
+
+      localStorage.setItem('token', json.data.token)
+      toast.success("Signup SuccessFull");
+      router.push("/")
+    } else {
+      toast.error("Error to Create");
+    }
+
+
+
+
   };
 
   if (!isClient) {
@@ -55,7 +94,9 @@ const OTPForm = () => {
         </p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex justify-between">
-            {otp.map((digit, index) => (
+
+            <Input id="username" onChange={handleInputChange} name="otp" placeholder="Choose a username" className="pl-10" />
+            {/* {otp.map((digit, index) => (
               <input
                 key={index}
                 type="text"
@@ -69,7 +110,7 @@ const OTPForm = () => {
                 id={`otp-input-${index}`}
                 autoFocus={index === 0} // Focus first input initially
               />
-            ))}
+            ))} */}
           </div>
           <div className="mt-6">
             <button

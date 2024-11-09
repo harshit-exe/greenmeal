@@ -10,9 +10,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { BaseApiUrl } from "@/utils/constanst";
+import { useRouter } from 'next/navigation'
 
 const SignUpPage = () => {
-
+  const router = useRouter()
 
   const [formData, setFormData] = useState({
     email: '',
