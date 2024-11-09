@@ -13,6 +13,7 @@ import Inventory from '@/components/User/Inventory'
 import Recipes from '@/components/User/Recipes'
 import Account from '@/components/User/Account'
 import NGO from '@/components/User/NGO'
+import History from '@/components/User/History'
 
 // Import your components here
 
@@ -21,6 +22,7 @@ const searchData = [
   { title: 'Inventory', component: 'Inventory' },
   { title: 'Recipes', component: 'Recipes' },
   { title: 'NGO Partnerships', component: 'NGO' },
+  { title: 'Donation History', component: 'History' },
   { title: 'Account Settings', component: 'Account' },
 ]
 
@@ -75,6 +77,8 @@ export default function DashboardLayout() {
         return <Recipes />
       case 'NGO':
         return <NGO />
+      case 'History':
+        return <History />
       case 'Account':
         return <Account />
       default:

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { LayoutDashboard, Utensils, BookOpen, Users, UserCircle, Settings, LogOut, X } from 'lucide-react'
+import { LayoutDashboard, Utensils, BookOpen, Users, UserCircle, Settings, LogOut, X ,History} from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 const menuItems = [
@@ -13,6 +13,7 @@ const menuItems = [
   { name: 'Inventory', icon: Utensils, component: 'Inventory' },
   { name: 'Recipes', icon: BookOpen, component: 'Recipes' },
   { name: 'NGO', icon: Users, component: 'NGO' },
+  { name: 'History', icon: History, component: 'History' },
   { name: 'Account', icon: UserCircle, component: 'Account' },
 ]
 
