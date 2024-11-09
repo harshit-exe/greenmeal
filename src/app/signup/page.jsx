@@ -1,202 +1,116 @@
 "use client";
-
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
+import { User, Mail, Phone, MapPin, Building } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 const SignUpPage = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    roles: {
-      donor: false,
-      foodBank: false,
-    },
-    phone: "",
-    address: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]:
-        type === "checkbox"
-          ? {
-              ...prevState[name],
-              [value]: checked,
-            }
-          : value,
-    }));
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    // Here you would typically send the data to your backend
+    console.log("Form submitted");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-green-400 via-teal-500 to-blue-500">
-      {/* Animated background elements */}
-      <motion.div
-        className="absolute inset-0 z-0"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 2 }}
-      >
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1IiBoZWlnaHQ9IjUiPgo8cmVjdCB3aWR0aD0iNSIgaGVpZ2h0PSI1IiBmaWxsPSIjZmZmIj48L3JlY3Q+CjxwYXRoIGQ9Ik0wIDVMNSAwWk02IDRMNCA2Wk0tMSAxTDEgLTFaIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iMSI+PC9wYXRoPgo8L3N2Zz4=')] opacity-10"></div>
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-green-300 to-blue-300 opacity-30"
-          animate={{
-            scale: [1, 1.1, 1],
-            rotate: [0, 10, 0],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            repeatType: "reverse",
-          }}
-        />
-      </motion.div>
-
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-green-400 via-teal-500 to-blue-500">
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md z-10"
+        className="w-full max-w-4xl"
       >
-        <div className="bg-white bg-opacity-90 backdrop-filter backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden">
-          <div className="p-8 sm:p-12">
-            <motion.h1
-              initial={{ scale: 0.5 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 260, damping: 20 }}
-              className="text-4xl sm:text-5xl font-bold text-center bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-8"
-            >
-              GreenMeal
-            </motion.h1>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <InputField
-                label="Username"
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                placeholder="Enter your username"
-              />
-              <InputField
-                label="Email"
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="name@example.com"
-              />
-              <InputField
-                label="Password"
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Enter your password"
-              />
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Role
-                </label>
-                <div className="flex items-center justify-start gap-4">
-                  <CheckboxField
-                    label="Donor"
-                    name="roles"
-                    value="donor"
-                    checked={formData.roles.donor}
-                    onChange={handleChange}
-                  />
-                  <CheckboxField
-                    label="Food Bank"
-                    name="roles"
-                    value="foodBank"
-                    checked={formData.roles.foodBank}
-                    onChange={handleChange}
-                  />
+        <Card className="bg-white/90 backdrop-blur-lg shadow-xl">
+          <CardHeader className="text-center">
+            <CardTitle className="text-4xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+              Join GreenMeal
+            </CardTitle>
+            <CardDescription>
+              Start your journey towards reducing food waste and helping communities
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="username">Username</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                    <Input id="username" placeholder="Choose a username" className="pl-10" />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="role">Role</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select your role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="donor">Donor</SelectItem>
+                      <SelectItem value="foodbank">Food Bank</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                    <Input id="email" type="email" placeholder="name@example.com" className="pl-10" />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone</Label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                    <Input id="phone" type="tel" placeholder="Enter your phone number" className="pl-10" />
+                  </div>
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="address">Address</Label>
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-3 text-gray-400" size={18} />
+                    <Textarea id="address" placeholder="Enter your address" className="pl-10" rows={3} />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <div className="relative">
+                    <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                    <Input id="password" type="password" placeholder="Create a password" className="pl-10" />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <div className="relative">
+                    <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                    <Input id="confirmPassword" type="password" placeholder="Confirm your password" className="pl-10" />
+                  </div>
                 </div>
               </div>
-              <InputField
-                label="Phone"
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="Enter your phone number"
-              />
-              <InputField
-                label="Address"
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                placeholder="Enter your address"
-              />
-              <motion.button
-                type="submit"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="w-full bg-gradient-to-r from-green-500 to-blue-500 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-200 ease-in-out transform"
-              >
+              <Button type="submit" className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white">
                 Sign Up
-              </motion.button>
+              </Button>
             </form>
-          </div>
-          <div className="bg-gradient-to-r from-green-100 to-blue-100 px-8 py-4">
-            <p className="text-sm text-center text-gray-600">
+          </CardContent>
+          <CardFooter className="justify-center">
+            <p className="text-sm text-gray-600">
               Already have an account?{" "}
               <a
-                href={"/login"}
+                href="/login"
                 className="font-medium text-green-600 hover:text-green-800 transition duration-200 ease-in-out"
               >
                 Log in
               </a>
             </p>
-          </div>
-        </div>
+          </CardFooter>
+        </Card>
       </motion.div>
     </div>
   );
 };
-
-const InputField = ({ label, type, name, value, onChange, placeholder }) => (
-  <div>
-    <label
-      htmlFor={name}
-      className="block text-sm font-medium text-gray-700 mb-1"
-    >
-      {label}
-    </label>
-    <input
-      type={type}
-      id={name}
-      name={name}
-      value={value}
-      onChange={onChange}
-      required
-      className="w-full px-4 py-2 bg-white bg-opacity-50 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200 ease-in-out"
-      placeholder={placeholder}
-    />
-  </div>
-);
-
-const CheckboxField = ({ label, name, value, checked, onChange }) => (
-  <label className="flex items-center space-x-3">
-    <input
-      type="checkbox"
-      name={name}
-      value={value}
-      checked={checked}
-      onChange={onChange}
-      className="form-checkbox h-5 w-5 text-green-600 transition duration-150 ease-in-out"
-    />
-    <span className="text-sm text-gray-700">{label}</span>
-  </label>
-);
 
 export default SignUpPage;
