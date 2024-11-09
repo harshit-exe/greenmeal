@@ -117,7 +117,7 @@ const LoginPage = () => {
           </div>
           <div className="bg-gradient-to-r from-green-100 to-blue-100 px-8 py-4">
             <p className="text-sm text-center text-gray-600">
-              Don't have an account?{" "}
+              Dont have an account?{" "}
               <a
                 href={"/signup"}
                 className="font-medium text-green-600 hover:text-green-800 transition duration-200 ease-in-out"
