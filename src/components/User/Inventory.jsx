@@ -282,8 +282,8 @@ const Inventory = ({userData}) => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          // facingMode: { exact: 'environment' }, // Requests the back camera
-          facingMode: { exact: 'user' }, // Requests the back camera
+           facingMode: { exact: 'environment' }, // Requests the back camera
+          //facingMode: { exact: 'user' }, // Requests the back camera
         },
       });
 

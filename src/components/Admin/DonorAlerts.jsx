@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Package, Clock, Check, X, Truck, Box, Award, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { BaseApiUrl } from '@/utils/constanst';
 
 const STATUS = {
   PENDING: 'pending',
@@ -14,11 +15,42 @@ const STATUS = {
   COMPLETED: 'completed'
 };
 
-const DonationRequests = () => {
+const DonationRequests = ({userData}) => {
   const [requests, setRequests] = useState([]);
   const [acceptedDonations, setAcceptedDonations] = useState([]);
   const [selectedDonation, setSelectedDonation] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+
+
+  const fetchDonorData = async()=>{
+    const response = await fetch(`${BaseApiUrl}/user/login`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+     
+    })
+    const json = await response.json()
+    console.log(json);
+    
+  }
+
+
+  useEffect(() => {
+    fetchDonorData();
+
+  }, [])
+  
+
+
+
+
+
+
+
+
+
 
   // Simulated incoming donation request
   const incomingRequests = [

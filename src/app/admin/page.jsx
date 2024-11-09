@@ -16,7 +16,7 @@ import Campaigns from "@/components/Admin/Campaigns";
 import Inventory from "@/components/Admin/Inventory";
 import DonorAlerts from "@/components/Admin/DonorAlerts";
 import Account from "@/components/Admin/Account";
-
+import { checkToken } from '@/utils/checkAuth'
 const searchData = [
   { title: "NGO Overview", component: "Overview" },
   { title: "Donor Management", component: "Donors" },
@@ -33,10 +33,25 @@ export default function NGODashboardLayout() {
   const [searchResults, setSearchResults] = useState([]);
   const [notifications, setNotifications] = useState(3);
   const { theme, setTheme } = useTheme();
+  const [userData, setUserData] = useState({})
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   useEffect(() => {
+
+
+    const verifyToken = async () => {
+      const tokenValid = await checkToken()
+    
+      setUserData(tokenValid.data);
+      console.log(tokenValid.data);
+      
+  
+    }
+    verifyToken()
+
+
+
     const handleResize = () => {
       if (window.innerWidth >= 768) {
         setIsSidebarOpen(true);
@@ -78,7 +93,7 @@ export default function NGODashboardLayout() {
       case "Inventory":
         return <Inventory />;
       case "DonorAlerts":
-        return <DonorAlerts />;
+        return <DonorAlerts userData={userData} />;
       case "Account":
         return <Account />;
       default:
