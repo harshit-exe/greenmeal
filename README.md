@@ -7,7 +7,9 @@
 
 - **NGO Account:**  
   - Email: `maneriteshh@gmail.com`  
-  - Password: `11223344`  
+  - Password: `11223344`
+  - 
+**Video Demo:** [Watch GreenMeal in Action](https://youtu.be/QhI5Iexg86M)
 
 **Minimize waste, uplift communities, and build a sustainable future.**
 
