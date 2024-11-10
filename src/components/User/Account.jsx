@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -11,6 +11,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Edit, Trash2, Award, Mail, Phone, MapPin, Globe } from 'lucide-react'
+import { getNgoAccount, getUser } from '@/data/getAccount'
+import { baseApiUrl } from 'mapbox-gl'
+import { BaseApiUrl } from '@/utils/constanst'
 
 const dummyUser = {
   firstName: "John",
@@ -27,10 +30,12 @@ const dummyUser = {
   ]
 }
 
-export default function UserProfile() {
+export default function UserProfile({ userData }) {
   const [user, setUser] = useState(dummyUser)
+  const [myuser, setmyUser] = useState({})
   const [isEditing, setIsEditing] = useState(false)
 
+ 
   const handleEdit = () => {
     setIsEditing(true)
   }
@@ -45,6 +50,27 @@ export default function UserProfile() {
     console.log("Delete profile")
   }
 
+  const fetchUser = async () => {
+    const response = await fetch(`${BaseApiUrl}/user/user`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json'
+        ,'id':userData.user.id
+      },
+    })
+    const json = await response.json()
+    console.log(json);
+    setmyUser(json)
+    
+
+  }
+
+
+  useEffect(() => {
+    fetchUser()
+  }, [])
+
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setUser(prevUser => ({ ...prevUser, [name]: value }))
@@ -56,7 +82,7 @@ export default function UserProfile() {
 
   return (
     <div className="container mx-auto p-4 bg-gradient-to-b from-green-50 to-green-100 min-h-screen">
-      <motion.h1 
+      <motion.h1
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="text-4xl font-bold text-green-800 mb-8 text-center"
@@ -73,7 +99,7 @@ export default function UserProfile() {
               <Avatar className="w-32 h-32 border-4 border-white shadow-lg">
                 <AvatarImage src={user.profilePic} alt={`${user.firstName} ${user.lastName}`} />
                 <AvatarFallback className="text-4xl font-bold bg-green-400 text-white">
-                  {user.firstName[0]}
+                  {myuser?.resume?.userName[0]}
                 </AvatarFallback>
               </Avatar>
             </motion.div>
@@ -82,15 +108,15 @@ export default function UserProfile() {
                 {isEditing ? (
                   <Input
                     name="firstName"
-                    value={user.firstName}
+                    value={myuser?.resume?.userName}
                     onChange={handleChange}
                     className="bg-green-500 text-white border-white"
                   />
                 ) : (
-                  `${user.firstName} ${user.lastName}`
+                  `${myuser?.resume?.userName}`
                 )}
               </CardTitle>
-              <p className="text-green-100">{user.email}</p>
+              <p className="text-green-100">{myuser?.resume?.email}</p>
             </div>
           </div>
         </CardHeader>
@@ -109,7 +135,7 @@ export default function UserProfile() {
                   <Input
                     id="email"
                     name="email"
-                    value={user.email}
+                    value={myuser?.resume?.email}
                     onChange={handleChange}
                     disabled={!isEditing}
                     className="bg-green-50"
@@ -122,7 +148,7 @@ export default function UserProfile() {
                   <Input
                     id="phone"
                     name="phone"
-                    value={user.phone}
+                    value={myuser?.resume?.phone}
                     onChange={handleChange}
                     disabled={!isEditing}
                     className="bg-green-50"
@@ -135,7 +161,7 @@ export default function UserProfile() {
                   <Input
                     id="address"
                     name="address"
-                    value={user.address}
+                    value={myuser?.resume?.address}
                     onChange={handleChange}
                     disabled={!isEditing}
                     className="bg-green-50"

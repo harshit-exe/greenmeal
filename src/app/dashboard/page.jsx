@@ -95,7 +95,7 @@ export default function DashboardLayout() {
       case 'UpcomingEvent':
         return <UpcomingEvent />
       case 'Account':
-        return <Account />
+        return <Account userData={userData}/>
       default:
         return <Overview />
     }

@@ -95,7 +95,7 @@ export default function NGODashboardLayout() {
       case "DonorAlerts":
         return <DonorAlerts userData={userData} />;
       case "Account":
-        return <Account />;
+        return <Account userData={userData} />;
       default:
         return <Overview />;
     }
