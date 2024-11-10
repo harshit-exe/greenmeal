@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Edit, Trash2, Mail, Phone, MapPin, Globe, Users, Leaf } from 'lucide-react'
+import { getNgoAccount, getUser } from '@/data/getAccount'
 
 const dummyNGO = {
   name: "Green Earth Foundation",
@@ -39,6 +40,23 @@ export default function NGOProfile() {
     // Implement delete logic here
     console.log("Delete NGO profile")
   }
+
+  const fetch = async ()=>{
+    const data = await getUser()
+    console.log(data);
+    
+    setNGO((prev) => ({
+      ...prev,
+      address: data?.resume.address,
+      email: data?.resume.email,
+      name: data?.resume.userName,
+      phone: data?.resume.phone,
+    }));
+  }
+
+  useEffect(()=>{
+    fetch()
+  },[])
 
   const handleChange = (e) => {
     const { name, value } = e.target
