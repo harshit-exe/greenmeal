@@ -225,10 +225,10 @@ const Overview = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="inventory">Inventory</TabsTrigger>
-          <TabsTrigger value="impact">Impact</TabsTrigger>
-          <TabsTrigger value="donors">Donor Analysis</TabsTrigger>
+        <TabsList className="grid h-auto grid-cols-3">
+          <TabsTrigger className='p-3 text-base' value="inventory">Inventory</TabsTrigger>
+          <TabsTrigger className='p-3 text-base' value="impact">Impact</TabsTrigger>
+          <TabsTrigger className='p-3 text-base' value="donors">Donor Analysis</TabsTrigger>
         </TabsList>
         <TabsContent value="inventory">
           <Card>
@@ -350,9 +350,9 @@ const Overview = () => {
 
 const StatCard = ({ icon, title, value, description, trend }) => (
   <motion.div
-    whileHover={{ scale: 1.05 }}
+    whileHover={{ scale: 1.02 }}
     whileTap={{ scale: 0.95 }}
-    className="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 flex items-center"
+    className="bg-white dark:bg-gray-700 rounded-lg border p-6 flex items-center"
   >
     <div className="mr-4 p-3 bg-green-100 dark:bg-green-800 rounded-full text-green-600 dark:text-green-300">
       {icon}

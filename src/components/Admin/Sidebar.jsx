@@ -50,7 +50,7 @@ export default function NGOSidebar({ onSelectComponent, closeSidebar }) {
 
   return (
     <motion.div 
-      className="flex flex-col h-full bg-green-50 text-green-900"
+      className="flex flex-col h-full"
       variants={sidebarVariants}
       initial="closed"
       animate="open"
