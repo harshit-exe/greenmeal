@@ -160,12 +160,28 @@ export default function NGO({userData}) {
   const handleDonationComplete = async (donationData) => {
     console.log('Donation data:', donationData, ngoId)
 
-    const response = await fetch(`http://localhost:4000/api/denoted/`, {
+
+
+    
+
+    const response2 = await fetch(`${BaseApiUrl}/user/user`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+        "id":donationData[0]?.userid
+      },
+      
+    })
+    const json2 = await response2.json()
+
+    console.log(json2);
+    
+    const response = await fetch(`${BaseApiUrl}/denoted/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({  ngoid:ngoId,        userid:donationData[0]?.userid,        item:donationData,        status:'',        needed :''})
+      body: JSON.stringify({  ngoid:ngoId,        userid:donationData[0]?.userid,    username:json2.resume.userName, address:json2.resume.address,phone:json2.resume.phone,   item:donationData,        status:'',        needed :''})
     })
     const json = await response.json()
     console.log(json);
@@ -284,7 +300,7 @@ export default function NGO({userData}) {
                     </div>
                     <div>
                       {/* <h3 className="text-lg font-semibold">{ngo.name}</h3> */}
-                      <p className="text-sm text-green-100">{ngo.address}</p>
+                      <p className="text-sm text-green-100">{ngo.userName}</p>
                     </div>
                   </CardTitle>
                 </CardHeader>

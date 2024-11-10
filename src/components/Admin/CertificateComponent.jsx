@@ -15,10 +15,12 @@ const QRCodePlaceholder = ({ value, size }) => (
   </div>
 );
 
-const CertificateComponent = ({ donation, onClose }) => {
+const CertificateComponent = ({ donation, onClose, dataDonor }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [certificateData, setCertificateData] = useState(null);
 
+  console.log(dataDonor);
+  
   const currentDate = new Date().toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -78,7 +80,7 @@ const CertificateComponent = ({ donation, onClose }) => {
       
       const certificateData = {
         certificateNumber: certNumber,
-        donorName: donation?.donor,
+        donorName: donation?.donor || dataDonor.username,
         ngoName: donation?.ngoName,
         items: donation?.items,
         generatedDate: currentDate,
@@ -159,7 +161,7 @@ const CertificateComponent = ({ donation, onClose }) => {
             <div>
               <p className="text-lg text-gray-700 mb-2">This certificate is proudly presented to</p>
               <h3 className="text-3xl font-bold text-green-700 font-serif tracking-wide mb-1">
-                {donation?.donor}
+             "   {dataDonor?.userName}"
               </h3>
               <div className="flex justify-center items-center gap-2 text-gray-600">
                 <MapPin className="w-4 h-4" />

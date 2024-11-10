@@ -17,7 +17,7 @@ const STATUS = {
   COMPLETED: 'completed'
 };
 
-const DonationRequests = ({userData}) => {
+const DonationRequests = ({ userData }) => {
   const router = useRouter()
   const [requests, setRequests] = useState([]);
   const [acceptedDonations, setAcceptedDonations] = useState([]);
@@ -26,24 +26,24 @@ const DonationRequests = ({userData}) => {
   const [dataDonor, setdataDonor] = useState([]);
 
 
-  const fetchDonorData = async()=>{
+  const fetchDonorData = async () => {
     const response = await fetch(`${BaseApiUrl}/denoted/getngo`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'userid':userData?.user?.id
+        'userid': userData?.user?.id
       }
     })
     const json = await response.json()
     console.log(json);
     setdataDonor(json.data)
-    
+
   }
 
   useEffect(() => {
     fetchDonorData();
   }, [])
-  
+
 
 
 
@@ -80,24 +80,24 @@ const DonationRequests = ({userData}) => {
   };
 
   const getStatusText = (status) => {
-    return status.split('_').map(word => 
+    return status.split('_').map(word =>
       word.charAt(0).toUpperCase() + word.slice(1)
     ).join(' ');
   };
 
   const handleStatusUpdate = (donation, newStatus) => {
-    const updatedDonations = acceptedDonations.map(d => 
+    const updatedDonations = acceptedDonations.map(d =>
       d.id === donation.id ? { ...d, status: newStatus } : d
     );
     setAcceptedDonations(updatedDonations);
-    
+
     const statusMessages = {
       [STATUS.ACCEPTED]: 'Donation request accepted',
       [STATUS.OUT_FOR_DELIVERY]: 'Donation marked out for delivery',
       [STATUS.COLLECTED]: 'Donation marked as collected',
       [STATUS.COMPLETED]: 'Certificate issued successfully'
     };
-    
+
     toast.success(statusMessages[newStatus]);
   };
 
@@ -111,18 +111,44 @@ const DonationRequests = ({userData}) => {
     setRequests(prev => prev.filter(r => r._id !== request._id));
   };
 
-  const handleReject = async(request) => {
+  const handleReject = async (request) => {
     const response = await fetch(`${BaseApiUrl}/denoted/delete`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        'id':request._id
+        'id': request._id
       }
     })
-    router.push("/")
+    // router.push("/")
+    const updatedItems = dataDonor.filter((item) => item._id !== request._id);
+    setdataDonor(updatedItems); 
     setRequests(prev => prev.filter(r => r._id !== request._id));
     toast.error('Donation request rejected');
   };
+
+  const userdatafetchdirect = async (id) => {
+    const response = await fetch(`${BaseApiUrl}/user/user`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+        'id': id
+      }
+    })
+    const json = await response.json()
+
+    return <>
+
+      <p className="font-semibold text-lg">{json.resume.userName}</p>
+      <p className="flex items-center text-gray-600">
+        <MapPin className="mr-2 text-green-500" size={16} />
+        123 Eco Street, Mumbai
+      </p>
+      <p className="flex items-center text-gray-600">
+        <Clock className="mr-2 text-blue-500" size={16} />
+        Email: +91 98765-43210
+      </p>
+    </>
+  }
 
   const openCertificateDialog = (donation) => {
     setSelectedDonation(donation);
@@ -276,15 +302,17 @@ const DonationRequests = ({userData}) => {
                   </CardHeader>
                   <CardContent className="p-4 space-y-3">
                     <div className="flex flex-col space-y-2">
-                      <p className="font-semibold text-lg">Green Earth Foundation</p>
+
+               
+                       <p className="font-semibold text-lg">{request.username}</p>
                       <p className="flex items-center text-gray-600">
                         <MapPin className="mr-2 text-green-500" size={16} />
-                        123 Eco Street, Mumbai
+                        {request.address}
                       </p>
                       <p className="flex items-center text-gray-600">
                         <Clock className="mr-2 text-blue-500" size={16} />
-                         Email: +91 98765-43210
-                      </p>
+                        Phone: {request.phone}
+                      </p> 
                       <div className="flex flex-wrap gap-2 mt-2">
                         {request?.item?.map((item, index) => (
                           <span
@@ -318,7 +346,7 @@ const DonationRequests = ({userData}) => {
               </motion.div>
             ))}
 
-            
+
           </AnimatePresence>
         </div>
 
@@ -384,25 +412,26 @@ const DonationRequests = ({userData}) => {
 
       {/* Certificate Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-  <DialogContent className="sm:max-w-5xl">
-    <DialogHeader>
-      <DialogTitle className="flex items-center">
-        <Award className="mr-2 text-green-600" />
-        Donation Achievement Certificate
-      </DialogTitle>
-    </DialogHeader>
-    
-    <div className="p-4 ">
-      <CertificateComponent 
-        donation={selectedDonation}
-        onClose={() => {
-          setIsDialogOpen(false);
-          issueCertificate();
-        }}
-      />
-    </div>
-  </DialogContent>
-</Dialog>
+        <DialogContent className="sm:max-w-5xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center">
+              <Award className="mr-2 text-green-600" />
+              Donation Achievement Certificate
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="p-4 ">
+            <CertificateComponent
+              username={dataDonor}
+              donation={selectedDonation}
+              onClose={() => {
+                setIsDialogOpen(false);
+                issueCertificate();
+              }}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
