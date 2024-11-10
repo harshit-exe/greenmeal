@@ -161,7 +161,7 @@ const CertificateComponent = ({ donation, onClose, dataDonor }) => {
             <div>
               <p className="text-lg text-gray-700 mb-2">This certificate is proudly presented to</p>
               <h3 className="text-3xl font-bold text-green-700 font-serif tracking-wide mb-1">
-             "   {dataDonor?.userName}"
+              {dataDonor?.userName}
               </h3>
               <div className="flex justify-center items-center gap-2 text-gray-600">
                 <MapPin className="w-4 h-4" />
