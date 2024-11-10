@@ -313,7 +313,7 @@ const Overview = () => {
             <CardHeader>
               <CardTitle>Donor Analysis</CardTitle>
               <CardDescription>
-                Distribution of donations by donor type
+                Distribution of donations by donor type.
               </CardDescription>
             </CardHeader>
             <CardContent className="h-[400px]">
