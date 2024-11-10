@@ -4,7 +4,7 @@ import { BaseApiUrl } from "@/utils/constanst";
 
 export const addCampaign = async (body)=>{
     try {
-        const res = await fetch(BaseApiUrl+"/api/campaign",{
+        const res = await fetch(`${BaseApiUrl}/campaign`,{
             method:"POST",
             headers:{
                 'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ export const getAllCampaign = async ()=>{
         console.log(data);
         
 
-        const res = await fetch(BaseApiUrl+"/api/campaign",{
+        const res = await fetch(`${BaseApiUrl}/campaign`,{
             headers:{
                 'Content-Type': 'application/json',
                 'id': data.user.id
