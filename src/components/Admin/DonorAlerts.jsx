@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { BaseApiUrl } from '@/utils/constanst';
 import CertificateComponent from './CertificateComponent';
+import { useRouter } from 'next/navigation'
 
 const STATUS = {
   PENDING: 'pending',
@@ -17,6 +18,7 @@ const STATUS = {
 };
 
 const DonationRequests = ({userData}) => {
+  const router = useRouter()
   const [requests, setRequests] = useState([]);
   const [acceptedDonations, setAcceptedDonations] = useState([]);
   const [selectedDonation, setSelectedDonation] = useState(null);
@@ -54,16 +56,16 @@ const DonationRequests = ({userData}) => {
 
   // Simulated incoming donation request
   const incomingRequests = [
-    {
-      id: 1,
-      ngoName: "Green Earth Foundation",
-      address: "123 Eco Street, Mumbai",
-      items: ["Rice", "Dal", "Sugar"],
-      status: STATUS.PENDING,
-      timestamp: new Date().toISOString(),
-      donor: "Harshit Nikam",
-      contact: "+91 98765-43210"
-    },
+    // {
+    //   id: 1,
+    //   ngoName: "Green Earth Foundation",
+    //   address: "123 Eco Street, Mumbai",
+    //   items: ["Rice", "Dal", "Sugar"],
+    //   status: STATUS.PENDING,
+    //   timestamp: new Date().toISOString(),
+    //   donor: "Harshit Nikam",
+    //   contact: "+91 98765-43210"
+    // },
   ];
 
   const getStatusColor = (status) => {
@@ -109,8 +111,16 @@ const DonationRequests = ({userData}) => {
     setRequests(prev => prev.filter(r => r._id !== request._id));
   };
 
-  const handleReject = (request) => {
-    setRequests(prev => prev.filter(r => r.id !== request.id));
+  const handleReject = async(request) => {
+    const response = await fetch(`${BaseApiUrl}/denoted/delete`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'id':request._id
+      }
+    })
+    router.push("/")
+    setRequests(prev => prev.filter(r => r._id !== request._id));
     toast.error('Donation request rejected');
   };
 
