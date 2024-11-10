@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Leaf, Search, Calendar, Package, CheckCircle2, Truck, Box } from 'lucide-react'
+import { Leaf, Search, Calendar, Package, CheckCircle2, Truck, Box, Loader2 } from 'lucide-react'
+import CertificateComponent from '../Admin/CertificateComponent'
 
 const dummyDonations = [
   { 
@@ -17,6 +18,8 @@ const dummyDonations = [
     items: ["Rice", "Dal"], 
     date: "2023-06-15", 
     status: "complete",
+    donor: "Harshit Nikam",
+    location: "Mumbai",
     updates: [
       { status: "Donation Initiated", date: "2023-06-15", icon: Box, completed: true },
       { status: "Picked up", date: "2023-06-16", icon: Truck, completed: true },
@@ -30,6 +33,8 @@ const dummyDonations = [
     items: ["Water Purifier"], 
     date: "2023-06-20", 
     status: "pending",
+    donor: "Harshit Nikam",
+    location: "Mumabai",
     updates: [
       { status: "Donation Initiated", date: "2023-06-20", icon: Box, completed: true },
       { status: "Awaiting pickup", date: "2023-06-21", icon: Truck, completed: false },
@@ -37,20 +42,33 @@ const dummyDonations = [
       { status: "Delivered", date: "", icon: CheckCircle2, completed: false },
     ]
   },
-  // ... (other donations)
 ]
 
 export default function DonationHistory() {
-  const [donations, setDonations] = useState(dummyDonations)
+  const [donations, setDonations] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [selectedDonation, setSelectedDonation] = useState(null)
+  const [isCertificateOpen, setIsCertificateOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     // Simulating API call to fetch donation history
-    setTimeout(() => {
-      setDonations(dummyDonations)
-    }, 1000)
+    const fetchDonations = async () => {
+      setIsLoading(true)
+      try {
+        // In a real application, replace this with an actual API call
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        setDonations(dummyDonations)
+      } catch (error) {
+        console.error("Error fetching donations:", error)
+        // Handle error state here
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchDonations()
   }, [])
 
   const handleSearch = (event) => {
@@ -71,9 +89,13 @@ export default function DonationHistory() {
     setSelectedDonation(donation)
   }
 
-  const handleGetCertificate = (donationId) => {
-    // Implement certificate generation logic here
-    console.log(`Generating certificate for donation ${donationId}`)
+  const handleGetCertificate = (donation) => {
+    setSelectedDonation(donation)
+    setIsCertificateOpen(true)
+  }
+
+  const handleCloseCertificate = () => {
+    setIsCertificateOpen(false)
   }
 
   return (
@@ -107,87 +129,93 @@ export default function DonationHistory() {
           </SelectContent>
         </Select>
       </div>
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ staggerChildren: 0.1 }}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-      >
-        <AnimatePresence>
-          {filteredDonations.map((donation) => (
-            <motion.div
-              key={donation.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Card className="bg-white border-green-200 hover:shadow-lg transition-shadow rounded-lg overflow-hidden">
-                <CardHeader className="bg-green-600 text-white p-4">
-                  <CardTitle className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <Leaf className="mr-2" size={18} />
-                      <span className="text-lg font-semibold">{donation.ngo}</span>
-                    </div>
-                    <Badge 
-                      variant={donation.status === 'complete' ? 'default' : 'secondary'}
-                      className={`${donation.status === 'complete' ? 'bg-green-500' : 'bg-yellow-500'} text-white`}
-                    >
-                      {donation.status}
-                    </Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-4">
-                  <p className="flex items-center text-gray-600 mb-2">
-                    <Calendar className="mr-2 text-green-500 flex-shrink-0" size={18} />
-                    <span className="text-sm">{donation.date}</span>
-                  </p>
-                  <p className="flex items-start text-gray-600">
-                    <Package className="mr-2 text-green-500 flex-shrink-0 mt-1" size={18} />
-                    <span className="text-sm">{donation.items.join(', ')}</span>
-                  </p>
-                </CardContent>
-                <CardFooter className="bg-green-50 p-4 flex justify-between">
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" className="text-green-600 border-green-600 hover:bg-green-100" onClick={() => handleViewMore(donation)}>
-                        View More
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
-                      <DialogHeader>
-                        <DialogTitle className="text-green-700">Donation Updates</DialogTitle>
-                      </DialogHeader>
-                      <div className="mt-4 relative">
-                        {donation.updates.map((update, index) => (
-                          <div key={index} className="flex items-start mb-8 relative">
-                            <div className={`absolute left-3 top-0 bottom-0 w-0.5 bg-green-200 ${index === donation.updates.length - 1 ? 'h-1/2' : ''}`}></div>
-                            <div className={`flex items-center justify-center w-7 h-7 rounded-full ${update.completed ? 'bg-green-500' : 'bg-gray-300'} mr-4 z-10`}>
-                              {update.icon && <update.icon className="w-4 h-4 text-white" />}
-                            </div>
-                            <div>
-                              <p className={`font-semibold ${update.completed ? 'text-green-700' : 'text-gray-500'}`}>{update.status}</p>
-                              <p className="text-sm text-gray-500">{update.date || 'Pending'}</p>
-                            </div>
-                          </div>
-                        ))}
+      {isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <Loader2 className="w-8 h-8 animate-spin text-green-600" />
+        </div>
+      ) : (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ staggerChildren: 0.1 }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          <AnimatePresence>
+            {filteredDonations.map((donation) => (
+              <motion.div
+                key={donation.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Card className="bg-white border-green-200 hover:shadow-lg transition-shadow rounded-lg overflow-hidden">
+                  <CardHeader className="bg-green-600 text-white p-4">
+                    <CardTitle className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <Leaf className="mr-2" size={18} />
+                        <span className="text-lg font-semibold">{donation.ngo}</span>
                       </div>
-                    </DialogContent>
-                  </Dialog>
-                  <Button 
-                    variant="secondary"
-                    className="bg-green-600 text-white hover:bg-green-700"
-                    onClick={() => handleGetCertificate(donation.id)}
-                  >
-                    Get Certificate
-                  </Button>
-                </CardFooter>
-              </Card>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </motion.div>
-      {filteredDonations.length === 0 && (
+                      <Badge 
+                        variant={donation.status === 'complete' ? 'default' : 'secondary'}
+                        className={`${donation.status === 'complete' ? 'bg-green-500' : 'bg-yellow-500'} text-white`}
+                      >
+                        {donation.status}
+                      </Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-4">
+                    <p className="flex items-center text-gray-600 mb-2">
+                      <Calendar className="mr-2 text-green-500 flex-shrink-0" size={18} />
+                      <span className="text-sm">{donation.date}</span>
+                    </p>
+                    <p className="flex items-start text-gray-600">
+                      <Package className="mr-2 text-green-500 flex-shrink-0 mt-1" size={18} />
+                      <span className="text-sm">{donation.items.join(', ')}</span>
+                    </p>
+                  </CardContent>
+                  <CardFooter className="bg-green-50 p-4 flex justify-between">
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" className="text-green-600 border-green-600 hover:bg-green-100" onClick={() => handleViewMore(donation)}>
+                          View More
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                          <DialogTitle className="text-green-700">Donation Updates</DialogTitle>
+                        </DialogHeader>
+                        <div className="mt-4 relative">
+                          {donation.updates.map((update, index) => (
+                            <div key={index} className="flex items-start mb-8 relative">
+                              <div className={`absolute left-3 top-0 bottom-0 w-0.5 bg-green-200 ${index === donation.updates.length - 1 ? 'h-1/2' : ''}`}></div>
+                              <div className={`flex items-center justify-center w-7 h-7 rounded-full ${update.completed ? 'bg-green-500' : 'bg-gray-300'} mr-4 z-10`}>
+                                {update.icon && <update.icon className="w-4 h-4 text-white" />}
+                              </div>
+                              <div>
+                                <p className={`font-semibold ${update.completed ? 'text-green-700' : 'text-gray-500'}`}>{update.status}</p>
+                                <p className="text-sm text-gray-500">{update.date || 'Pending'}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                    <Button 
+                      variant="secondary"
+                      className="bg-green-600 text-white hover:bg-green-700"
+                      onClick={() => handleGetCertificate(donation)}
+                    >
+                      Get Certificate
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+      )}
+      {!isLoading && filteredDonations.length === 0 && (
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -196,6 +224,23 @@ export default function DonationHistory() {
           No donations found matching your search criteria.
         </motion.p>
       )}
+      <Dialog open={isCertificateOpen} onOpenChange={setIsCertificateOpen}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle className="text-green-700">Donation Certificate</DialogTitle>
+          </DialogHeader>
+          {selectedDonation && (
+            <CertificateComponent
+              donation={{
+                ...selectedDonation,
+                ngoName: selectedDonation.ngo,
+              }}
+              onClose={handleCloseCertificate}
+              dataDonor={{ userName: selectedDonation.donor }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
