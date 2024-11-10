@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Send, Bot, User, AlertCircle, ChevronDown, ChevronUp, Leaf, Image as ImageIcon } from 'lucide-react'
+import { Send, Bot, User, AlertCircle, ChevronDown, ChevronUp, Leaf, Volume2, StopCircle } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import { GoogleGenerativeAI } from "@google/generative-ai"
+import { toast, Toaster } from 'sonner'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,7 +15,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY || 'AIzaSyBCuvpypc1y7oCKQZPfctEGtHx5r8edCfo'
 const genAI = new GoogleGenerativeAI(API_KEY)
 
-export default function RecipeChatbot({ selectedIngredients }) {
+export default function RecipeChatbot({ selectedIngredients = [] }) {
   const [messages, setMessages] = useState([
     { id: 'initial', role: 'assistant', content: "Hello! I'm your eco-friendly recipe assistant. Select ingredients or ask for a recipe!" }
   ])    
@@ -24,6 +25,8 @@ export default function RecipeChatbot({ selectedIngredients }) {
   const [chatSession, setChatSession] = useState(null)
   const [expandedMessages, setExpandedMessages] = useState({})
   const messagesEndRef = useRef(null)
+  const [isSpeaking, setIsSpeaking] = useState(false)
+  const speechSynthesisRef = useRef(null)
 
   useEffect(() => {
     const initChat = async () => {
@@ -73,7 +76,6 @@ export default function RecipeChatbot({ selectedIngredients }) {
       const result = await chatSession.sendMessage(messageContent)
       const responseText = result.response.text()
       
-      // Extract recipe steps
       const stepsMatch = responseText.match(/Steps:([\s\S]*?)(?:\n\n|$)/)
       const recipeSteps = stepsMatch ? stepsMatch[1].split('\n').map(step => step.trim()).filter(Boolean) : []
 
@@ -86,7 +88,6 @@ export default function RecipeChatbot({ selectedIngredients }) {
 
       setMessages(prev => [...prev, newMessage])
 
-      // Generate image for the recipe
       if (recipeSteps.length > 0) {
         const imagePrompt = `${messageContent.split('using:')[1]?.trim() || 'prepared dish'}`
         const imageUrl = await generateImage(imagePrompt)
@@ -117,6 +118,34 @@ export default function RecipeChatbot({ selectedIngredients }) {
 
   const toggleMessageExpansion = (id) => {
     setExpandedMessages(prev => ({ ...prev, [id]: !prev[id] }))
+  }
+
+  const speakMessage = (text) => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel()
+
+      const utterance = new SpeechSynthesisUtterance(text)
+      utterance.onstart = () => setIsSpeaking(true)
+      utterance.onend = () => setIsSpeaking(false)
+      utterance.onerror = (event) => {
+        console.error('Speech synthesis error:', event)
+        setIsSpeaking(false)
+        toast.error('Failed to play the voice note. Please try again.')
+      }
+
+      speechSynthesisRef.current = utterance
+      window.speechSynthesis.speak(utterance)
+    } else {
+      console.error('Text-to-speech not supported in this browser.')
+      toast.error('Text-to-speech is not supported in your browser.')
+    }
+  }
+
+  const stopSpeaking = () => {
+    if (speechSynthesisRef.current) {
+      window.speechSynthesis.cancel()
+      setIsSpeaking(false)
+    }
   }
 
   const renderMessage = (message) => {
@@ -150,6 +179,27 @@ export default function RecipeChatbot({ selectedIngredients }) {
             )}
           </Button>
         )}
+        <div className="flex items-center gap-2 mt-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => speakMessage(message.content)}
+            disabled={isSpeaking}
+          >
+            <Volume2 className="w-4 h-4 mr-2" />
+            {isSpeaking ? 'Speaking...' : 'Play Voice Note'}
+          </Button>
+          {isSpeaking && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={stopSpeaking}
+            >
+              <StopCircle className="w-4 h-4 mr-2" />
+              Stop
+            </Button>
+          )}
+        </div>
         {message.recipeSteps && message.recipeSteps.length > 0 && (
           <Accordion type="single" collapsible className="mt-4">
             <AccordionItem value="steps">
@@ -175,10 +225,13 @@ export default function RecipeChatbot({ selectedIngredients }) {
 
   return (
     <Card className="h-full bg-green-50 border-green-200 shadow-lg flex flex-col">
+      <Toaster position="top-right" />
       <CardHeader className="bg-green-200 rounded-t-lg">
-        <CardTitle className="flex items-center text-green-800 text-2xl">
-          <Leaf className="mr-2 h-6 w-6" />
-          Eco-Friendly Recipe Assistant
+        <CardTitle className="flex items-center justify-between text-green-800 text-2xl">
+          <div className="flex items-center">
+            <Leaf className="mr-2 h-6 w-6" />
+            Eco-Friendly Recipe Assistant
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-grow flex flex-col p-4">
