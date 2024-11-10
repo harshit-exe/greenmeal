@@ -52,7 +52,7 @@ export default function DonorTable() {
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card className="w-full p-10">
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-green-800 flex items-center">
           <Leaf className="mr-2" /> Eco-Friendly Donor Management

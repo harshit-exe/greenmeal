@@ -4,6 +4,14 @@ import { Navbar } from "../Navbar";
 import { Button } from "../ui/button";
 import { LeafyGreenIcon } from "lucide-react";
 import { motion } from "framer-motion";
+import Image from "next/image";
+import gridImg_1 from "../../../public/assets/gridImg_1.jpg";
+import gridImg_2 from "../../../public/assets/gridImg_2.jpg";
+import gridImg_3 from "../../../public/assets/gridImg_3.jpg";
+import gridImg_4 from "../../../public/assets/gridImg_4.jpg";
+import gridImg_5 from "../../../public/assets/gridImg_5.jpg";
+import gridImg_6 from "../../../public/assets/gridImg_6.jpg";
+import Footer from "../Footer";
 
 const Hero = () => {
   return (
@@ -43,16 +51,52 @@ const Hero = () => {
                 initial={{ y: -100 }}
                 animate={{ y: 0 }}
                 transition={{ duration: 0.8, ease: "easeInOut" }}
-                className=" h-[120px] rounded-3xl bg-lime-200"
-              ></motion.div>
-              <motion.div className=" flex-1 rounded-3xl bg-lime-200"></motion.div>
+                className=" h-[120px] rounded-3xl bg-lime-200 overflow-hidden"
+              >
+                <Image
+                  src={gridImg_1}
+                  className="h-full w-full object-cover"
+                  alt="gridImg"
+                />
+              </motion.div>
+              <motion.div className=" flex-1 rounded-3xl bg-lime-200 overflow-hidden">
+                <Image
+                  src={gridImg_5}
+                  className="h-full w-full object-cover"
+                  alt="gridImg"
+                />
+              </motion.div>
             </div>
-            <div className="bg-lime-200 rounded-3xl h-[340px] w-full border"></div>
+            <div className="bg-lime-200 rounded-3xl h-[340px] w-full border overflow-hidden">
+              <Image
+                src={gridImg_3}
+                className="h-full w-full object-cover"
+                alt="gridImg"
+              />
+            </div>
             <div className=" rounded-3xl flex-col justify-end flex gap-5 h-full w-full">
-              <motion.div className=" h-[180px] rounded-3xl bg-lime-200"></motion.div>
-              <motion.div className=" h-[120px] rounded-3xl bg-lime-200"></motion.div>
+              <motion.div className=" h-[180px] rounded-3xl bg-lime-200 overflow-hidden">
+                <Image
+                  src={gridImg_6}
+                  className="h-full w-full object-cover"
+                  alt="gridImg"
+                />
+              </motion.div>
+              <motion.div className=" h-[120px] rounded-3xl bg-lime-200 overflow-hidden">
+                <Image
+                  src={gridImg_2}
+                  className="h-full w-full object-cover"
+                  alt="gridImg"
+                />
+              </motion.div>
             </div>
-            <div className="bg-lime-200 rounded-3xl h-full w-full border"></div>
+            <div className="bg-lime-200 rounded-3xl h-full w-full border overflow-hidden">
+              <Image
+                src={gridImg_4}
+                className="h-full w-full object-cover"
+                alt="gridImg"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -125,16 +169,9 @@ const Hero = () => {
         </div>
       </section>
 
-      <section className="my-20">
-        <div className="flex p-10 border rounded-2xl">
-          <div>
-            <h1>Small Changes Make a Big Diffrence</h1>
-            <p className="p-5 text-lg bg-slate-100">Lorem ipsum dolor sit amet consectetur, adipisicing elit.lorem</p>
-          </div>
-          <div>
-            Image
-          </div>
-        </div>  
+      
+      <section>
+        <Footer />
       </section>
     </main>
   );

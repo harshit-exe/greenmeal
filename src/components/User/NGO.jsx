@@ -197,7 +197,7 @@ export default function NGO({userData}) {
   }
 
   return (
-    <div className="container mx-auto p-4 bg-gradient-to-b from-green-50 to-green-100 min-h-screen">
+    <div className="container mx-auto p-4 min-h-screen">
       <Toaster />
       <motion.h1
         initial={{ opacity: 0, y: -20 }}

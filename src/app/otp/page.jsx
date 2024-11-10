@@ -95,7 +95,7 @@ const OTPForm = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex justify-between">
 
-            <Input id="username" onChange={handleInputChange} name="otp" placeholder="Choose a username" className="pl-10" />
+            <Input id="username" onChange={handleInputChange} name="otp" placeholder="Enter OTP" className="pl-10" />
             {/* {otp.map((digit, index) => (
               <input
                 key={index}

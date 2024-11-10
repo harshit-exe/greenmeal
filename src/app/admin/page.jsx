@@ -102,7 +102,7 @@ export default function NGODashboardLayout() {
   };
 
   return (
-    <div className="flex h-screen bg-green-50 text-green-900">
+    <div className="flex h-screen text-green-900">
       <AnimatePresence>
         {isSidebarOpen && (
           <motion.div
@@ -110,7 +110,7 @@ export default function NGODashboardLayout() {
             animate={{ x: 0 }}
             exit={{ x: -300 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed inset-y-0 left-0 z-50 w-64 bg-green-100 shadow-lg md:relative"
+            className="fixed inset-y-0 left-0 z-50 w-64 border-l md:relative"
           >
             <Sidebar
               onSelectComponent={setSelectedComponent}
@@ -120,7 +120,7 @@ export default function NGODashboardLayout() {
         )}
       </AnimatePresence>
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="flex items-center justify-between p-4 bg-green-100 shadow-sm">
+        <header className="flex items-center justify-between p-4">
           <div className="flex items-center">
             <Button
               variant="ghost"
@@ -199,7 +199,7 @@ export default function NGODashboardLayout() {
             </Button>
           </div>
         </header>
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-green-50 p-6">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto p-2">
           <motion.div
             key={selectedComponent}
             initial={{ opacity: 0, y: 20 }}
