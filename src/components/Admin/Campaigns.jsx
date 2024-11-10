@@ -9,6 +9,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { addCampaign, getAllCampaign } from '@/data/getCampaign';
+import { checkToken } from '@/utils/checkAuth';
 
 const MapboxMap = ({ onLocationSelect }) => {
   const [viewState, setViewState] = useState({
@@ -71,7 +73,7 @@ const CampaignPage = () => {
     setNewCampaign(prev => ({ ...prev, location }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const newCampaignData = { 
       ...newCampaign, 
@@ -80,7 +82,11 @@ const CampaignPage = () => {
     };
     setCampaigns(prev => [...prev, newCampaignData]);
     setNewCampaign({ name: '', motto: '', donationRequired: '', eventDate: '', location: null });
-    console.log(newCampaign);
+
+    const {data} = await checkToken()
+    
+    const newcamp = await addCampaign({...newCampaign,ngoid : data.user.id})
+    console.log(newcamp);
     
     setIsDialogOpen(false);
     toast.success('Campaign created successfully!');
@@ -174,6 +180,16 @@ const CampaignPage = () => {
     });
   };
 
+
+  const get = async ()=>{
+    const data = await getAllCampaign()
+    setCampaigns(data)
+  }
+
+  useEffect(()=>{
+    get()
+  },[])
+
   return (
     <div className="container mx-auto p-4 bg-green-50 min-h-screen">
       <h1 className="text-3xl font-bold text-green-800 mb-6 flex items-center">
@@ -218,8 +234,8 @@ const CampaignPage = () => {
       </Dialog>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {campaigns.map((campaign) => (
-          <Card key={campaign.id} className="w-full bg-white shadow-lg rounded-lg overflow-hidden border border-green-200">
+        {campaigns && campaigns.map((campaign) => (
+          <Card key={campaign._id} className="w-full bg-white shadow-lg rounded-lg overflow-hidden border border-green-200">
             <CardHeader className="bg-green-100">
               <CardTitle className="text-green-800 text-lg">{campaign.name}</CardTitle>
               <CardDescription className="text-green-600 text-sm">{campaign.motto}</CardDescription>
