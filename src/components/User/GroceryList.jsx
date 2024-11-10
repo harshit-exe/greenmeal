@@ -8,16 +8,11 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { ShoppingBasket, Leaf } from 'lucide-react'
 
 const groceryItems = [
-  { id: 1, name: 'Tomatoes', expiryDate: '2023-06-30', category: 'Vegetables' },
-  { id: 2, name: 'Spinach', expiryDate: '2023-06-25', category: 'Vegetables' },
-  { id: 3, name: 'Chicken', expiryDate: '2023-06-28', category: 'Meat' },
-  { id: 4, name: 'Rice', expiryDate: '2023-12-31', category: 'Grains' },
-  { id: 5, name: 'Eggs', expiryDate: '2023-07-15', category: 'Dairy' },
-  { id: 6, name: 'Carrots', expiryDate: '2023-07-10', category: 'Vegetables' },
-  { id: 7, name: 'Milk', expiryDate: '2023-06-27', category: 'Dairy' },
-  { id: 8, name: 'Bread', expiryDate: '2023-06-24', category: 'Bakery' },
-  { id: 9, name: 'Apples', expiryDate: '2023-07-05', category: 'Fruits' },
-  { id: 10, name: 'Salmon', expiryDate: '2023-06-26', category: 'Seafood' },
+  { id: 1, name: 'Tomatoes', expiryDate: '2024-11-15', category: 'Vegetables' },
+  { id: 2, name: 'Chicken', expiryDate: '2024-11-10', category: 'Meat' },
+  { id: 3, name: 'Rice', expiryDate: '2024-12-31', category: 'Grains' },
+  { id: 4, name: 'Eggs', expiryDate: '2024-12-01', category: 'Dairy' },
+  { id: 5, name: 'Bread', expiryDate: '2024-11-12', category: 'Bakery' },
 ]
 
 export default function GroceryList({ onIngredientSelect }) {
