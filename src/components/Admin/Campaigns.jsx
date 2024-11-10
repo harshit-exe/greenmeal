@@ -97,6 +97,8 @@ const CampaignPage = () => {
       ), // Simulated donation amount
     };
     setCampaigns((prev) => [...prev, newCampaignData]);
+    
+    
     setNewCampaign({
       name: "",
       motto: "",
@@ -106,6 +108,9 @@ const CampaignPage = () => {
     });
 
     const { data } = await checkToken();
+
+    console.log(newCampaign);
+    
 
     const newcamp = await addCampaign({ ...newCampaign, ngoid: data.user.id });
     console.log(newcamp);
@@ -208,14 +213,7 @@ const CampaignPage = () => {
     });
   };
 
-  const get = async () => {
-    const data = await getAllCampaign();
-    setCampaigns(data);
-  };
-
-  useEffect(() => {
-    get();
-  }, []);
+  
 
   return (
     <div className="container mx-auto p-4 min-h-screen">
@@ -297,7 +295,7 @@ const CampaignPage = () => {
       </Dialog>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {!campaigns && (
+        {campaigns.length === 0 && (
           <div>
             <p className="text-center text-green-800">
               No eco-friendly campaigns found. Create one now!
