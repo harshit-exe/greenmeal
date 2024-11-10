@@ -33,7 +33,10 @@ const MapboxMap = ({ onLocationSelect }) => {
       style={{ width: '100%', height: '300px' }}
       mapStyle="mapbox://styles/mapbox/outdoors-v11"
       onClick={handleClick}
+      latitude={19.1136}
+      longitude={72.8777}
       className="rounded-md overflow-hidden"
+      zoom={12}
     >
       {markerPosition && (
         <Marker
@@ -77,10 +80,13 @@ const CampaignPage = () => {
     };
     setCampaigns(prev => [...prev, newCampaignData]);
     setNewCampaign({ name: '', motto: '', donationRequired: '', eventDate: '', location: null });
+    console.log(newCampaign);
+    
     setIsDialogOpen(false);
     toast.success('Campaign created successfully!');
   };
-  console.log(setNewCampaign);
+
+
   const handleTotalDonation = (campaign) => {
     const donationPercentage = ((campaign.donationCollected / campaign.donationRequired) * 100).toFixed(1);
     toast(
@@ -167,7 +173,7 @@ const CampaignPage = () => {
       duration: 3000,
     });
   };
-  console.log(handleSendAlertToDonors);
+
   return (
     <div className="container mx-auto p-4 bg-green-50 min-h-screen">
       <h1 className="text-3xl font-bold text-green-800 mb-6 flex items-center">
