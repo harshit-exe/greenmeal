@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, Package, Clock, Check, X, Truck, Box, Award, AlertCircle } from 'lucide-react';
+import { MapPin, Package, Clock, Check, X, Truck, Box, Award, AlertCircle, LogIn } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -101,12 +101,47 @@ const DonationRequests = ({ userData }) => {
     toast.success(statusMessages[newStatus]);
   };
 
-  const handleAccept = (request) => {
+  const handleAccept = async (request) => {
     const updatedRequest = {
       ...request,
       status: STATUS.ACCEPTED,
       acceptedAt: new Date().toISOString()
     };
+
+    const response2 = await fetch(`${BaseApiUrl}/denoted/delete`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'id': request._id
+      }
+    })
+    const updatedItems = dataDonor.filter((item) => item._id !== request._id);
+    setdataDonor(updatedItems); 
+
+    const response3 = await fetch(`${BaseApiUrl}/user/user`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+        'id': request.userid
+      }
+    })
+    const json3 = await response3.json()
+    console.log(json3);
+    
+
+
+    const response = await fetch(`${BaseApiUrl}/history/`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      } ,
+      body: JSON.stringify({ userid:json3.resume._id,username:json3.resume.userName,phone:json3.resume.phone,address:json3.resume.address,item:request.item })
+    }) 
+
+    console.log("asdlfk");
+    
+
+
     setAcceptedDonations(prev => [...prev, updatedRequest]);
     setRequests(prev => prev.filter(r => r._id !== request._id));
   };
