@@ -91,7 +91,7 @@ export default function DashboardLayout() {
       case 'NGO':
         return <NGO userData={userData}/>
       case 'History':
-        return <History />
+        return <History userData={userData} />
       case 'UpcomingEvent':
         return <UpcomingEvent />
       case 'Account':

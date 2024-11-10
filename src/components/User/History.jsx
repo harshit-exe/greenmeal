@@ -44,15 +44,21 @@ const dummyDonations = [
   },
 ]
 
-export default function DonationHistory() {
+export default function DonationHistory({userData}) {
   const [donations, setDonations] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [selectedDonation, setSelectedDonation] = useState(null)
   const [isCertificateOpen, setIsCertificateOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [histroy, sethistory] = useState([])
+
+
 
   useEffect(() => {
+    fetchhistory()
+
+
     // Simulating API call to fetch donation history
     const fetchDonations = async () => {
       setIsLoading(true)
@@ -70,6 +76,23 @@ export default function DonationHistory() {
 
     fetchDonations()
   }, [])
+
+
+  const fetchhistory = async()=>{
+    const response3 = await fetch(`http://localhost:4000/api/history`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+        'id': userData.user.id
+      }
+    })
+    const json3 = await response3.json()
+    console.log(userData);
+    sethistory(json3)
+    
+    console.log(json3);
+    
+  }
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value.toLowerCase())
@@ -212,6 +235,7 @@ export default function DonationHistory() {
                 </Card>
               </motion.div>
             ))}
+
           </AnimatePresence>
         </motion.div>
       )}

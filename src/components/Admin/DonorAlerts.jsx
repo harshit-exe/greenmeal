@@ -107,7 +107,8 @@ const DonationRequests = ({ userData }) => {
       status: STATUS.ACCEPTED,
       acceptedAt: new Date().toISOString()
     };
-
+    console.log(request);
+    
     const response2 = await fetch(`${BaseApiUrl}/denoted/delete`, {
       method: 'DELETE',
       headers: {
@@ -135,7 +136,7 @@ const DonationRequests = ({ userData }) => {
       headers: {
         'Content-Type': 'application/json',
       } ,
-      body: JSON.stringify({ userid:json3.resume._id,username:json3.resume.userName,phone:json3.resume.phone,address:json3.resume.address,item:request.item })
+      body: JSON.stringify({ngoName:request.ngoid, userid:json3.resume._id,username:json3.resume.userName,phone:json3.resume.phone,address:json3.resume.address,item:request.item })
     }) 
 
     console.log("asdlfk");
