@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Check } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { BaseApiUrl } from '@/utils/constanst'
 
 const donationItems = [
   { id: 1, name: 'Rice', color: 'bg-yellow-200' },
@@ -16,8 +17,9 @@ const donationItems = [
   { id: 6, name: 'Salt', color: 'bg-gray-200' },
 ]
 
-export default function DonationSelector({ onDonationComplete }) {
+export default function DonationSelector({ onDonationComplete,userData }) {
   const [selectedItems, setSelectedItems] = useState([])
+  const [donationItems, setdonationItems] = useState([])
 
   const toggleItem = (item) => {
     setSelectedItems(prev => 
@@ -32,6 +34,31 @@ export default function DonationSelector({ onDonationComplete }) {
     onDonationComplete(selectedItems)
   }
 
+  const fetchProduct = async ()=>{
+    const response = await fetch(`${BaseApiUrl}/inventory/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        "userid":userData?.user?.id
+      },
+    
+    })
+    const json = await response.json()
+
+    console.log(json,"userdata or lasdkfjadf",userData?.user);
+    setdonationItems(json.resume)
+   
+
+
+  }
+
+  useEffect(() => {
+   
+    fetchProduct()
+
+  }, [])
+  
+
   return (
     <div className="space-y-6">
       <motion.div 
@@ -42,23 +69,23 @@ export default function DonationSelector({ onDonationComplete }) {
       >
         {donationItems.map((item) => (
           <motion.div
-            key={item.id}
+            key={item._id}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             <Card 
               className={`overflow-hidden cursor-pointer transition-all duration-300 ${
-                selectedItems.some(i => i.id === item.id) ? 'ring-2 ring-green-500' : ''
+                selectedItems.some(i => i._id === item._id) ? 'ring-2 ring-green-500' : ''
               }`}
               onClick={() => toggleItem(item)}
             >
               <CardContent className="p-4 flex flex-col items-center justify-center h-full">
-                <div className={`w-16 h-16 rounded-full ${item.color} flex items-center justify-center text-2xl font-bold mb-2`}>
-                  {item.name[0]}
+                <div className={`w-16 h-16 rounded-full Rice flex items-center justify-center text-2xl font-bold mb-2`}>
+                  {item.itemName[0]}
                 </div>
-                <Label className="font-semibold text-sm text-center">{item.name}</Label>
+                <Label className="font-semibold text-sm text-center">{item.itemName}</Label>
                 <AnimatePresence>
-                  {selectedItems.some(i => i.id === item.id) && (
+                  {selectedItems.some(i => i._id === item._id) && (
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
@@ -92,7 +119,7 @@ export default function DonationSelector({ onDonationComplete }) {
                   exit={{ opacity: 0, x: 20 }}
                   className="flex justify-between items-center"
                 >
-                  <span>{item.name}</span>
+                  <span>{item.itemName}</span>
                   <Button 
                     variant="ghost" 
                     size="sm" 

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Navbar } from "../Navbar";
 import { Button } from "../ui/button";
 import { LeafyGreenIcon } from "lucide-react";

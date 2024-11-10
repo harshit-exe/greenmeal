@@ -1,14 +1,15 @@
 "use client";
 
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { LeafIcon, Menu } from "lucide-react";
-
+import { checkToken } from "@/utils/checkAuth"
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export function Navbar() {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -19,6 +20,21 @@ export function Navbar() {
     { name: "Login", href: "/login" },
     { name: "Sign Up", href: "/signup" },
   ];
+
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [userData, setUserData] = useState({})
+
+  useEffect(() => {
+    const verifyToken = async () => {
+      const tokenValid = await checkToken()
+      setIsAuthenticated(tokenValid.status)
+      setUserData(tokenValid.data);
+
+    }
+    verifyToken()
+  }, [])
+
 
   return (
     <nav className="bg-background border-b">
@@ -34,7 +50,7 @@ export function Navbar() {
           </div>
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
-              {menuItems.map((item) => (
+              {/* {menuItems.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
@@ -42,7 +58,33 @@ export function Navbar() {
                 >
                   {item.name}
                 </Link>
-              ))}
+              ))} */}
+              <Link href='/' className="text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
+                Home
+              </Link>
+              <Link href='/login' className="text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
+                About Us
+              </Link>
+              {isAuthenticated ? <> {userData.user.roleName === 'user'? 
+                <Link href='/dashboard' className="text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
+                  Dashboard
+                </Link>
+              :  <Link href='/admin' className="text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
+              Dashboard
+            </Link>}
+              </> : ''
+
+              }
+
+
+              {!isAuthenticated ? <>
+                <Link href='/login' className="text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
+                  Login
+                </Link>
+                <Link href='/signup' className="text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
+                  Sign Up
+                </Link>
+              </> : ''}
             </div>
           </div>
           <div className="md:hidden">

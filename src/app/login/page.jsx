@@ -49,7 +49,7 @@ const LoginPage = () => {
       console.error("Login error:", error)
       toast.error("An error occurred during login")
     } finally {
-      setIsLoading(false)
+      // setIsLoading(false)
     }
 
 

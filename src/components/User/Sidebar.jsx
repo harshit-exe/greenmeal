@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { LayoutDashboard, Utensils, BookOpen, Users, UserCircle, Settings, LogOut, X ,History} from 'lucide-react'
+import { LayoutDashboard, Utensils, BookOpen, Users, UserCircle, Settings, LogOut, X ,History,CalendarClock} from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 const menuItems = [
@@ -14,6 +14,7 @@ const menuItems = [
   { name: 'Recipes', icon: BookOpen, component: 'Recipes' },
   { name: 'NGO', icon: Users, component: 'NGO' },
   { name: 'History', icon: History, component: 'History' },
+  { name: 'Event', icon: CalendarClock, component: 'UpcomingEvent' },
   { name: 'Account', icon: UserCircle, component: 'Account' },
 ]
 
@@ -45,6 +46,7 @@ export default function Sidebar({ onSelectComponent, closeSidebar }) {
 
   const handleLogout = () => {
     router.push("/")
+    localStorage.clear()
   }
 
   return (
